@@ -4,8 +4,8 @@ lib.io.readFile("input.txt").then((data) => {
   const l = data.map((line) => Number(line.split(" ")[0]));
   const r = data.map((line) => Number(line.split(" ").at(-1)));
 
-  const lSort = [...l].sort((a, b) => a - b);
-  const rSort = [...r].sort((a, b) => a - b);
+  const lSort = l.sort((a, b) => a - b);
+  const rSort = r.sort((a, b) => a - b);
 
   const counter = r.reduce((m, i) => m.set(i, (m.get(i) || 0) + 1), new Map());
 
