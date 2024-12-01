@@ -1,8 +1,8 @@
 import * as lib from "../lib";
 
 lib.io.readFile("input.txt").then((data) => {
-  const l = data.map((line) => Number(line.split(" ")[0]));
-  const r = data.map((line) => Number(line.split(" ").at(-1)));
+  const l = data.map((line) => Number(line.split("   ")[0]));
+  const r = data.map((line) => Number(line.split("   ")[1]));
 
   const lSort = l.sort((a, b) => a - b);
   const rSort = r.sort((a, b) => a - b);
