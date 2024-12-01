@@ -1,25 +1,16 @@
 import * as lib from "../lib";
 
 lib.io.readFile("input.txt").then((data) => {
-  const left = data.map((line) => Number(line.split(" ")[0]));
-  const right = data.map((line) => Number(line.split(" ").at(-1)));
+  const l = data.map((line) => Number(line.split(" ")[0]));
+  const r = data.map((line) => Number(line.split(" ").at(-1)));
 
-  const leftSort = [...left].sort((a, b) => a - b);
-  const rightSort = [...right].sort((a, b) => a - b);
+  const lSort = [...l].sort((a, b) => a - b);
+  const rSort = [...r].sort((a, b) => a - b);
 
-  let part1 = 0;
-  for (let i = 0; i < leftSort.length; i++) {
-    part1 += Math.abs(rightSort[i] - leftSort[i]);
-  }
+  const counter = r.reduce((m, i) => m.set(i, (m.get(i) || 0) + 1), new Map());
 
-  const counter = right.reduce(
-    (map, item) => map.set(item, (map.get(item) || 0) + 1),
-    new Map(),
-  );
-
-  const part2 = left.reduce((sum, num) => {
-    return sum + (counter.get(num) || 0) * num;
-  }, 0);
+  const part1 = lSort.reduce((sum, l, i) => sum + Math.abs(rSort[i] - l), 0);
+  const part2 = l.reduce((sum, n) => sum + (counter.get(n) || 0) * n, 0);
 
   console.log("Part 1: " + part1);
   console.log("Part 2: " + part2);
