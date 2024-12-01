@@ -17,10 +17,8 @@ lib.io.readFile("input.txt").then((data) => {
     new Map(),
   );
 
-  const part2 = data.reduce((sum, line) => {
-    const num = Number(line.split(" ")[0]);
-    const val = counter.get(num);
-    return val ? sum + val * num : sum;
+  const part2 = left.reduce((sum, num) => {
+    return sum + (counter.get(num) || 0) * num;
   }, 0);
 
   console.log("Part 1: " + part1);
