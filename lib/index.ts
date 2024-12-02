@@ -1,1 +1,2 @@
-export * as io from "./io.ts";
+export * as io from "./io";
+export * as math from "./math";
