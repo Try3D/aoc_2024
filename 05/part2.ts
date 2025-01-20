@@ -31,8 +31,8 @@ fs.readFile(
 
     let total = 0;
     for (const nums of listOfNums) {
-      if (valid(nums, rToL)) {
-        total += nums[Math.floor(nums.length / 2)];
+      if (!valid(nums, rToL)) {
+        total += topoSort(nums, lToR)[Math.floor(nums.length / 2)];
       }
     }
 
@@ -50,4 +50,51 @@ function valid(nums: number[], rToL: Map<number, Set<number>>): boolean {
   }
 
   return true;
+}
+
+function topoSort(nums: number[], lToR: Map<number, Set<number>>): number[] {
+  const inDegree = new Map<number, number>();
+  const adj = new Map<number, Set<number>>();
+
+  for (const num of nums) {
+    inDegree.set(num, 0);
+    adj.set(num, new Set<number>());
+  }
+
+  for (const num of nums) {
+    const dependencies = lToR.get(num);
+    if (dependencies) {
+      for (const dep of dependencies) {
+        if (nums.includes(dep)) {
+          adj.get(num)!.add(dep);
+          inDegree.set(dep, inDegree.get(dep)! + 1);
+        }
+      }
+    }
+  }
+
+  const queue: number[] = [];
+  let queueStart = 0;
+
+  for (const num of nums) {
+    if (inDegree.get(num) === 0) {
+      queue.push(num);
+    }
+  }
+
+  const result: number[] = [];
+
+  while (queueStart < queue.length) {
+    const current = queue[queueStart++];
+    result.push(current);
+
+    for (const neighbor of adj.get(current)!) {
+      inDegree.set(neighbor, inDegree.get(neighbor)! - 1);
+      if (inDegree.get(neighbor) === 0) {
+        queue.push(neighbor);
+      }
+    }
+  }
+
+  return result;
 }
