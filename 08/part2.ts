@@ -1,6 +1,6 @@
 import fs from "fs";
 
-type Point = {
+type Coordinate = {
   x: number;
   y: number;
 };
@@ -13,7 +13,7 @@ fs.readFile(
 
     const lines = data.trim().split("\n");
 
-    const map = new Map<string, Point[]>();
+    const map = new Map<string, Coordinate[]>();
 
     for (let i = 0; i < lines.length; i++) {
       for (let j = 0; j < lines[0].length; j++) {

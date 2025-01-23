@@ -1,11 +1,11 @@
 import fs from "fs";
 
-type Point = {
+type Coordinate = {
   x: number;
   y: number;
 };
 
-const directions: Point[] = [
+const directions: Coordinate[] = [
   { x: 1, y: 1 },
   { x: -1, y: 1 },
   { x: 1, y: -1 },
