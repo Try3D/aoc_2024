@@ -6,24 +6,55 @@ fs.readFile(
   function (err: NodeJS.ErrnoException | null, data: string) {
     if (err) throw err;
 
-    const lines = data.trim().split("\n");
+    const line = data.trim();
 
-    const lefts: number[] = [];
-    const rights: number[] = [];
+    let s = "";
+    let idx = 0;
 
-    lines.map((line) => {
-      lefts.push(parseInt(line.split("   ")[0]));
-      rights.push(parseInt(line.split("   ")[1]));
-    });
+    for (let i = 0; i < line.length; i += 2) {
+      if (i + 1 >= line.length) {
+        s += strMul(String(idx), Number(line[i]));
+      } else {
+        s += strMul(String(idx), Number(line[i]));
+        s += strMul("*", Number(line[i + 1]));
+      }
 
-    lefts.sort((a, b) => a - b);
-    rights.sort((a, b) => a - b);
+      idx += 1;
+    }
+
+    let l = 0;
+    let r = s.length - 1;
+
+    let sArr = s.split("");
+
+    while (l < r) {
+      while (sArr[l] !== "*" && l < r) {
+        l += 1;
+      }
+
+      while (sArr[r] == "*" && l < r) {
+        r -= 1;
+      }
+
+      const tmp = sArr[r];
+      sArr[r] = sArr[l];
+      sArr[l] = tmp;
+
+      l += 1;
+      r -= 1;
+    }
 
     let total = 0;
-    for (let i = 0; i < lefts.length; i++) {
-      total += Math.abs(lefts[i] - rights[i]);
+    for (let i = 1; i < sArr.length; i++) {
+      if (sArr[i] !== "*") {
+        total += Number(sArr[i]) * i;
+      }
     }
 
     console.log(total);
   },
 );
+
+function strMul(x: string, n: number) {
+  return new Array(n).fill(x).join("");
+}

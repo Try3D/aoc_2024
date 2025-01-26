@@ -21,12 +21,7 @@ fs.readFile("input.txt", "utf8", function (err, data) {
   console.log(total);
 });
 
-/**
- * @param {number} num
- * @param {number[]} arr
- * @returns {boolean}
- */
-function backtrack(num, arr) {
+function backtrack(num: number, arr: number[]): boolean {
   if (arr.length == 1) {
     if (arr[0] == num) {
       return true;
@@ -41,11 +36,9 @@ function backtrack(num, arr) {
 
   const sum = arr[0] + arr[1];
   const mul = arr[0] * arr[1];
-  const join = Number(String(arr[0]) + String(arr[1]));
 
   return (
     backtrack(num, [mul, ...arr.slice(2)]) ||
-    backtrack(num, [sum, ...arr.slice(2)]) ||
-    backtrack(num, [join, ...arr.slice(2)])
+    backtrack(num, [sum, ...arr.slice(2)])
   );
 }
