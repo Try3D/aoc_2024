@@ -20,7 +20,7 @@ fs.readFile(
     const line = data.trim();
 
     const files: FileType[] = [];
-    const freeSpace: FreeSpaceType[] = [];
+    const free: FreeSpaceType[] = [];
 
     let idx = 0;
 
@@ -29,17 +29,29 @@ fs.readFile(
       idx += Number(line[i]);
 
       if (i + 1 < line.length) {
-        freeSpace.push({ idx, size: Number(line[i + 1]) });
+        free.push({ idx, size: Number(line[i + 1]) });
         idx += Number(line[i + 1]);
       }
     }
 
-    for (let i = files.length - 1; i > -1; i--) {
-      for (let j = 0; j < freeSpace.length; j++) {
-        if (freeSpace[j].size >= files[i].size) {
-          files[i].idx = freeSpace[j].idx;
-          freeSpace[j].size -= files[i].size;
-          freeSpace[j].idx += files[i].size;
+    const span: FreeSpaceType[] = [];
+    for (let i = 0; i < free.length; i++) {
+      if (
+        span.length > 0 &&
+        free[i].idx === span[span.length - 1].idx + span[span.length - 1].size
+      ) {
+        span[span.length - 1].size += free[i].size;
+      } else {
+        span.push({ ...free[i] });
+      }
+    }
+
+    for (let i = files.length - 1; i >= 0; i--) {
+      for (let j = 0; j < span.length; j++) {
+        if (span[j].size >= files[i].size && span[j].idx < files[i].idx) {
+          files[i].idx = span[j].idx;
+          span[j].size -= files[i].size;
+          span[j].idx += files[i].size;
 
           break;
         }
