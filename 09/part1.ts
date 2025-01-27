@@ -8,15 +8,18 @@ fs.readFile(
 
     const line = data.trim();
 
-    let s = "";
+    let s: string[] = [];
     let idx = 0;
 
     for (let i = 0; i < line.length; i += 2) {
-      if (i + 1 >= line.length) {
-        s += strMul(String(idx), Number(line[i]));
-      } else {
-        s += strMul(String(idx), Number(line[i]));
-        s += strMul("*", Number(line[i + 1]));
+      for (let j = 0; j < Number(line[i]); j++) {
+        s.push(String(idx));
+      }
+
+      if (i + 1 < line.length) {
+        for (let j = 0; j < Number(line[i + 1]); j++) {
+          s.push("*");
+        }
       }
 
       idx += 1;
@@ -25,36 +28,30 @@ fs.readFile(
     let l = 0;
     let r = s.length - 1;
 
-    let sArr = s.split("");
-
     while (l < r) {
-      while (sArr[l] !== "*" && l < r) {
+      while (s[l] !== "*" && l < r) {
         l += 1;
       }
 
-      while (sArr[r] == "*" && l < r) {
+      while (s[r] == "*" && l < r) {
         r -= 1;
       }
 
-      const tmp = sArr[r];
-      sArr[r] = sArr[l];
-      sArr[l] = tmp;
+      const tmp = s[r];
+      s[r] = s[l];
+      s[l] = tmp;
 
       l += 1;
       r -= 1;
     }
 
     let total = 0;
-    for (let i = 1; i < sArr.length; i++) {
-      if (sArr[i] !== "*") {
-        total += Number(sArr[i]) * i;
+    for (let i = 1; i < s.length; i++) {
+      if (s[i] !== "*") {
+        total += Number(s[i]) * i;
       }
     }
 
     console.log(total);
   },
 );
-
-function strMul(x: string, n: number) {
-  return new Array(n).fill(x).join("");
-}
