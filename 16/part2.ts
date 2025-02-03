@@ -6,7 +6,7 @@ type Coordinate = {
   y: number;
 };
 
-type Item = [Coordinate, string, number];
+type Item = [Coordinate[], string, number];
 
 const directions: Record<string, Coordinate> = {
   N: { x: 0, y: -1 },
@@ -25,25 +25,35 @@ fs.readFile(
 
     let start = { x: 1, y: lines.length - 2 };
     let end = { x: lines[0].length - 2, y: 1 };
+    let minCost: number | null = null;
+
+    const res = new Set();
 
     const facing = "E";
 
     const visited = new Set<string>();
 
     const q = new Heap((a: Item, b: Item) => a[2] - b[2]);
-    q.add([start, facing, 0]);
+    q.add([[start], facing, 0]);
 
     while (!q.isEmpty()) {
-      const [pos, dir, cost] = q.pop()!;
+      const [path, dir, cost] = q.pop()!;
 
-      if (visited.has(`${pos.x},${pos.y},${dir}`)) {
-        continue;
-      }
+      const pos = path[path.length - 1];
+
       visited.add(`${pos.x},${pos.y},${dir}`);
 
       if (pos.x === end.x && pos.y === end.y) {
-        console.log(cost);
-        break;
+        if (!minCost) {
+          minCost = cost;
+        } else if (minCost < cost) {
+          console.log(res.size);
+          return;
+        }
+
+        for (let loc of path) {
+          res.add(`${loc.x},${loc.y}`);
+        }
       }
 
       for (let key of Object.keys(directions)) {
@@ -63,7 +73,7 @@ fs.readFile(
           continue;
         }
 
-        q.add([newPos, key, cost + (dir === key ? 1 : 1001)]);
+        q.add([[...path, newPos], key, cost + (dir === key ? 1 : 1001)]);
       }
     }
   },
