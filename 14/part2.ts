@@ -20,8 +20,6 @@ fs.readFile(
 
     const h = 103;
     const w = 101;
-    const wMid = Math.floor(w / 2);
-    const hMid = Math.floor(h / 2);
 
     const re = /p=([0-9-]*),([0-9-]*) v=([0-9-]*),([0-9-]*)/g;
 
@@ -33,14 +31,14 @@ fs.readFile(
       });
     }
 
-    let minSafety = Infinity;
     let bestTime = 0;
+    let minVar = Infinity;
 
     for (let sec = 0; sec < h * w; sec++) {
-      let q1 = 0;
-      let q2 = 0;
-      let q3 = 0;
-      let q4 = 0;
+      let eX = 0;
+      let eY = 0;
+      let e2X = 0;
+      let e2Y = 0;
 
       for (let robot of robots) {
         let x = (robot.pos.x + sec * robot.vel.x) % w;
@@ -49,15 +47,19 @@ fs.readFile(
         if (x < 0) x += w;
         if (y < 0) y += h;
 
-        if (x > wMid && y < hMid) q1++;
-        else if (x > wMid && y > hMid) q2++;
-        else if (x < wMid && y > hMid) q3++;
-        else if (x < wMid && y < hMid) q4++;
+        eX += x;
+        eY += y;
+        e2X += x * x;
+        e2Y += y * y;
       }
 
-      const safetyScore = q1 * q2 * q3 * q4;
-      if (safetyScore < minSafety) {
-        minSafety = safetyScore;
+      eX /= robots.length;
+      eY /= robots.length;
+
+      const variance = e2X - eX * eX + e2Y - eY * eY;
+
+      if (variance < minVar) {
+        minVar = variance;
         bestTime = sec;
       }
     }
@@ -70,23 +72,18 @@ fs.readFile(
       if (robot.pos.y < 0) robot.pos.y += h;
     });
 
-    console.log(`<--------- HIGHEST SAFETY SCORE: ${bestTime} --------->`);
-    for (let i = 0; i < h; i++) {
-      let out = "";
-      for (let j = 0; j < w; j++) {
-        out += isOccupied(j, i) ? "#" : ".";
-      }
-      console.log(out);
+    console.log(`<--------- MIN VARIANCE: ${bestTime} --------->`);
+
+    var arr = Array(h)
+      .fill(null)
+      .map((_) => Array(w).fill("."));
+
+    for (let robot of robots) {
+      arr[robot.pos.y][robot.pos.x] = "#";
     }
 
-    function isOccupied(x: number, y: number): boolean {
-      for (let robot of robots) {
-        if (robot.pos.x === x && robot.pos.y === y) {
-          return true;
-        }
-      }
-
-      return false;
+    for (let i = 0; i < h; i++) {
+      console.log(arr[i].join(""));
     }
   },
 );
