@@ -21,6 +21,5 @@ function mod(secret: bigint) {
   secret = (secret ^ (secret * BigInt(64))) % BigInt(16777216);
   secret = (secret ^ (secret / BigInt(32))) % BigInt(16777216);
   secret = (secret ^ (secret * BigInt(2048))) % BigInt(16777216);
-
   return secret;
 }
