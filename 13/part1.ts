@@ -1,4 +1,3 @@
-// @ts-check
 import fs from "fs";
 
 type Coordinate = {
